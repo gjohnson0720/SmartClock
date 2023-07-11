@@ -1,106 +1,91 @@
 #include <gtk/gtk.h>
+#include <fstream>
+#include <iostream>
+#include <ctime>
+#include "ForecastDayWidget.h"
+#include "TopRow.h"
+#include "BottomRow.h"
+#include "CurlThread.h"
+#include "ForecastParser.h"
 
-static gint timer = 0;
-static GtkWidget* timeLabel;
-static GtkWidget* ampmLabel;
-static GtkWidget* dateLabel;
-static GtkWidget* tempLabel;
-static GtkWidget* tempUnitsLabel;
-static GtkWidget* dayLabel;
-static GtkWidget* grid;
+static TopRow* topRow = nullptr;
+static BottomRow* bottomRow = nullptr;
+static GtkWidget* screen = nullptr;
 
-gint UpdateTime (gpointer data)
-{
-    char time_buffer[12];
-    char ampm_buffer[4];
-    char date_buffer[8];
-    time_t now;
-    time(&now);
-    struct tm *tm = localtime(&now);
-    /* --- Change the label to show new time --- */
-    if (tm->tm_hour > 12)
-    {
-      tm->tm_hour -= 12;
-      strcpy(ampm_buffer, "PM");
-    }
-    else
-    {
-      strcpy(ampm_buffer, "AM");
-    }
-    sprintf (time_buffer, "%2d:%02d", tm->tm_hour, tm->tm_min);//, tm->tm_sec);
-    gtk_label_set_text (GTK_LABEL (timeLabel), time_buffer);
-    gtk_label_set_text (GTK_LABEL (ampmLabel), ampm_buffer);
-
-    sprintf (date_buffer, "%2d/%02d", tm->tm_mon + 1, tm->tm_mday);
-    gtk_label_set_text (GTK_LABEL (dateLabel), date_buffer);
-    // gtk_label_set_text (GTK_LABEL (tempLabel), " 67");
-    // gtk_label_set_text (GTK_LABEL (dayLabel), "MON");
-    // TRACE_I("current time : (%llu) %04d-%02d-%02dT%02d:%02d:%02dZ", now,
-    //   1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday, );
-}
 
 int main(int argc, char* argv[]) {
-  gtk_init(&argc, &argv);
+    gtk_init(&argc, &argv);
 
-  timeLabel = gtk_label_new("        ");
-  ampmLabel = gtk_label_new("  ");
-  dateLabel = gtk_label_new("     ");
-  tempLabel = gtk_label_new(" 67");
-  tempUnitsLabel = gtk_label_new("°F");
-  dayLabel = gtk_label_new("MON");
+    if (__cplusplus == 202101L) std::cout << "C++23";
+    else if (__cplusplus == 202002L) std::cout << "C++20";
+    else if (__cplusplus == 201703L) std::cout << "C++17";
+    else if (__cplusplus == 201402L) std::cout << "C++14";
+    else if (__cplusplus == 201103L) std::cout << "C++11";
+    else if (__cplusplus == 199711L) std::cout << "C++98";
+    else std::cout << "pre-standard C++." << __cplusplus;
+    std::cout << "\n";
 
-  GdkRGBA red_color {1.0, .0, .0, 1.0};
-  gtk_widget_override_color(timeLabel, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &red_color);
-  gtk_widget_override_color(ampmLabel, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &red_color);
-  gtk_widget_override_color(dateLabel, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &red_color);
-  gtk_widget_override_color(tempLabel, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &red_color);
-  gtk_widget_override_color(tempUnitsLabel, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &red_color);
-  gtk_widget_override_color(dayLabel, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &red_color);
+    if (argc < 2 || std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")
+    {
+        std::cout << "Usage " << argv[0] << " [options]" <<std::endl;
+        std::cout << "    --forecastFile=<filename>   File path for the forecast json file from accuweather.com instead of doing a curl call" << std::endl;
+        return 1;
+    }
+	std::vector<ForecastDayData> days;
 
-  PangoFontDescription *time_font_description = pango_font_description_new();
-  pango_font_description_set_family(time_font_description, "DSEG14 Modern");
-  pango_font_description_set_size(time_font_description, 300 * PANGO_SCALE);
-  pango_font_description_set_weight(time_font_description, PangoWeight::PANGO_WEIGHT_BOLD);
-  gtk_widget_override_font(timeLabel, time_font_description);
+    std::string arg1 = argv[1];
+    auto index = arg1.find("--forecastFile=");
+    if (index != std::string::npos)
+    {
+    	const std::string &forecastFileName = arg1.substr(index + 15);
+		std::cout << "forecastFileName " << forecastFileName << std::endl;
+		if (!forecastFileName.empty())
+		{
+			std::ifstream forecastFile(forecastFileName, std::ios::in);
+			if (!forecastFile.is_open())
+			{
+				std::cout << "Could not open forecast file " << forecastFileName << std::endl;
+				return 1;
+			}
+			days = ForecastParser::Parse(forecastFile);
+		}
+    }
 
-  PangoFontDescription *ampm_font_description = pango_font_description_new();
-  pango_font_description_set_family(ampm_font_description, "DSEG14 Modern");
-  pango_font_description_set_size(ampm_font_description, 24 * PANGO_SCALE);
-  pango_font_description_set_weight(ampm_font_description, PangoWeight::PANGO_WEIGHT_BOLD);
-  gtk_widget_override_font(ampmLabel, ampm_font_description);
 
-  PangoFontDescription *date_font_description = pango_font_description_new();
-  pango_font_description_set_family(date_font_description, "DSEG14 Modern");
-  pango_font_description_set_size(date_font_description, 96 * PANGO_SCALE);
-  pango_font_description_set_weight(date_font_description, PangoWeight::PANGO_WEIGHT_BOLD);
-  gtk_widget_override_font(tempLabel, date_font_description);
-  gtk_widget_override_font(dayLabel, date_font_description);
-  gtk_widget_override_font(dateLabel, date_font_description);
+    std::vector<CurlThreadConfig> config = {CurlThreadConfig("https://google.com", 20, 48, 00,
+    		[&](std::string contents)
+			{
+    			std::cout << "Received contents: " << contents << std::endl;
+			}) };
+    CurlThread curlThread(config);
+    curlThread.Start();
 
-  PangoFontDescription *temp_units_font_description = pango_font_description_new();
-  pango_font_description_set_family(temp_units_font_description, "Arial");
-  pango_font_description_set_size(temp_units_font_description, 24 * PANGO_SCALE);
-  pango_font_description_set_weight(temp_units_font_description, PangoWeight::PANGO_WEIGHT_BOLD);
-  gtk_widget_override_font(tempUnitsLabel, temp_units_font_description);
-  
-  grid = gtk_grid_new();
-  gtk_grid_attach ( GTK_GRID ( grid ), ampmLabel, 0, 0, 1, 1 );
-  gtk_grid_attach ( GTK_GRID ( grid ), timeLabel, 0, 0, 7, 25 );
-  gtk_grid_attach ( GTK_GRID ( grid ), tempLabel, 8, 0, 1, 1 );
-  gtk_grid_attach ( GTK_GRID ( grid ), tempUnitsLabel, 9, 0, 1, 1 );
-  gtk_grid_attach ( GTK_GRID ( grid ), dayLabel, 8, 3, 1, 10 );
-  gtk_grid_attach ( GTK_GRID ( grid ), dateLabel, 8, 13, 1, 10 );
-  
-  auto window = gtk_window_new(GtkWindowType::GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title(GTK_WINDOW(window), "Hello world (label)");
-  gtk_window_set_default_size(GTK_WINDOW(window), 300, 300);
-  g_signal_connect (window, "destroy", G_CALLBACK(gtk_main_quit), nullptr);
-  gtk_container_add ( GTK_CONTAINER ( window ), grid );
-  GdkRGBA black_color {.0, .0, .0, 1.0};
-  gtk_widget_override_background_color(window, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &black_color);
-  gtk_widget_show_all(window);
+    // GtkCssProvider *provider = gtk_css_provider_new ();
+    // gtk_css_provider_load_from_path (provider, "gtk-widgets.css", NULL);
 
-  timer = g_timeout_add (1000, UpdateTime, NULL);
+    // GtkStyleContext *context = gtk_widget_get_style_context(timeLabel);
+    // gtk_style_context_add_provider (context,
+    // 								  GTK_STYLE_PROVIDER(provider),
+    // 								  GTK_STYLE_PROVIDER_PRIORITY_USER);
 
-  gtk_main();
+    topRow = new TopRow();
+    bottomRow = new BottomRow();
+
+    screen = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start ( GTK_BOX(screen), topRow->Widget(), 0, 0, 0 );
+    gtk_box_pack_start ( GTK_BOX(screen), bottomRow->Widget(), 0, 0, 0 );
+
+  	auto window = gtk_window_new(GtkWindowType::GTK_WINDOW_TOPLEVEL);
+  	gtk_window_set_title(GTK_WINDOW(window), "Hello world (label)");
+  	gtk_window_set_default_size(GTK_WINDOW(window), 1024, 768);
+  	g_signal_connect (window, "destroy", G_CALLBACK(gtk_main_quit), nullptr);
+    gtk_container_add ( GTK_CONTAINER ( window ), screen );
+  	GdkRGBA black_color {.0, .0, .0, 1.0};
+  	gtk_widget_override_background_color(window, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &black_color);
+  	gtk_widget_show_all(window);
+
+	bottomRow->Update(days);
+
+	gtk_main();
 }
+
