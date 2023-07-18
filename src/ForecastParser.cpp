@@ -6,11 +6,23 @@ using json = nlohmann::json;
 
 static void print_date(time_t time);
 static std::string get_day_of_week(time_t time);
+static std::vector<ForecastDayData> Parse(json& json);
 
 std::vector<ForecastDayData> ForecastParser::Parse(std::istream& stream)
 {
     json data = json::parse(stream);
-    auto& dailyForecasts = data["DailyForecasts"];
+    return ::Parse(data);
+}
+
+std::vector<ForecastDayData> ForecastParser::Parse(const std::string& str)
+{
+    json data = json::parse(str);
+    return ::Parse(data);
+}
+
+std::vector<ForecastDayData> Parse(json& json)
+{
+    auto& dailyForecasts = json["DailyForecasts"];
     std::vector<ForecastDayData> days(dailyForecasts.size());
 
     int index = 0;

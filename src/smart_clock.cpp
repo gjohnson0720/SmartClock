@@ -31,34 +31,26 @@ int main(int argc, char* argv[]) {
         std::cout << "    --forecastFile=<filename>   File path for the forecast json file from accuweather.com instead of doing a curl call" << std::endl;
         return 1;
     }
-	std::vector<ForecastDayData> days;
+	  std::vector<ForecastDayData> days;
 
     std::string arg1 = argv[1];
     auto index = arg1.find("--forecastFile=");
     if (index != std::string::npos)
     {
-    	const std::string &forecastFileName = arg1.substr(index + 15);
-		std::cout << "forecastFileName " << forecastFileName << std::endl;
-		if (!forecastFileName.empty())
-		{
-			std::ifstream forecastFile(forecastFileName, std::ios::in);
-			if (!forecastFile.is_open())
-			{
-				std::cout << "Could not open forecast file " << forecastFileName << std::endl;
-				return 1;
-			}
-			days = ForecastParser::Parse(forecastFile);
-		}
+        const std::string &forecastFileName = arg1.substr(index + 15);
+        std::cout << "forecastFileName " << forecastFileName << std::endl;
+        if (!forecastFileName.empty())
+        {
+            std::ifstream forecastFile(forecastFileName, std::ios::in);
+            if (!forecastFile.is_open())
+            {
+                std::cout << "Could not open forecast file " << forecastFileName << std::endl;
+                return 1;
+            }
+            days = ForecastParser::Parse(forecastFile);
+        }
     }
 
-
-    std::vector<CurlThreadConfig> config = {CurlThreadConfig("https://google.com", 20, 48, 00,
-    		[&](std::string contents)
-			{
-    			std::cout << "Received contents: " << contents << std::endl;
-			}) };
-    CurlThread curlThread(config);
-    curlThread.Start();
 
     // GtkCssProvider *provider = gtk_css_provider_new ();
     // gtk_css_provider_load_from_path (provider, "gtk-widgets.css", NULL);
@@ -84,8 +76,29 @@ int main(int argc, char* argv[]) {
   	gtk_widget_override_background_color(window, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &black_color);
   	gtk_widget_show_all(window);
 
-	bottomRow->Update(days);
+	  bottomRow->Update(days);
 
-	gtk_main();
+    CurlThread curlThread;
+    // curlThread.AddUrlToRetrieve(CurlThreadConfig("https://google.com", 15, "urlContents", "html",
+    // 		[&](std::string contents)
+    //     {
+    //         std::cout << "Received contents: " << contents << std::endl;
+    //     }) );
+    // curlThread.AddUrlToRetrieve(CurlThreadConfig("https://www.google.com", 15, "urlContents", "json",
+    // 		[&](std::string contents)
+    //     {
+    //         std::cout << "Received contents: " << contents << std::endl;
+    //     }) );
+    curlThread.AddUrlToRetrieve(CurlThreadConfig("http://dataservice.accuweather.com/forecasts/v1/daily/5day/332120?apikey=E73cA2eAoUBJBCtEGvmSZamye4fl11ae&details=true",
+        60, "urlContents", "json",
+    		[&](std::string contents)
+        {
+            //std::cout << "Received contents: " << contents << std::endl;
+            days = ForecastParser::Parse(contents);
+            bottomRow->Update(days);
+        }) );        
+    curlThread.Start();
+    gtk_window_fullscreen(GTK_WINDOW(window));
+	  gtk_main();
 }
 
