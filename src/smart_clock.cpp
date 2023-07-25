@@ -25,32 +25,36 @@ int main(int argc, char* argv[]) {
     else std::cout << "pre-standard C++." << __cplusplus;
     std::cout << "\n";
 
-    if (argc < 2 || std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")
-    {
-        std::cout << "Usage " << argv[0] << " [options]" <<std::endl;
-        std::cout << "    --forecastFile=<filename>   File path for the forecast json file from accuweather.com instead of doing a curl call" << std::endl;
-        return 1;
-    }
-	  std::vector<ForecastDayData> days;
+    std::vector<ForecastDayData> days;
 
-    std::string arg1 = argv[1];
-    auto index = arg1.find("--forecastFile=");
-    if (index != std::string::npos)
+    if (argc >= 2)
     {
-        const std::string &forecastFileName = arg1.substr(index + 15);
-        std::cout << "forecastFileName " << forecastFileName << std::endl;
-        if (!forecastFileName.empty())
+        if (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")
         {
-            std::ifstream forecastFile(forecastFileName, std::ios::in);
-            if (!forecastFile.is_open())
+            std::cout << "Usage " << argv[0] << " [options]" <<std::endl;
+            std::cout << "    --forecastFile=<filename>   File path for the forecast json file from accuweather.com instead of doing a curl call" << std::endl;
+            return 1;
+        }
+        
+
+        std::string arg1 = argv[1];
+        auto index = arg1.find("--forecastFile=");
+        if (index != std::string::npos)
+        {
+            const std::string &forecastFileName = arg1.substr(index + 15);
+            std::cout << "forecastFileName " << forecastFileName << std::endl;
+            if (!forecastFileName.empty())
             {
-                std::cout << "Could not open forecast file " << forecastFileName << std::endl;
-                return 1;
+                std::ifstream forecastFile(forecastFileName, std::ios::in);
+                if (!forecastFile.is_open())
+                {
+                    std::cout << "Could not open forecast file " << forecastFileName << std::endl;
+                    return 1;
+                }
+                days = ForecastParser::Parse(forecastFile);
             }
-            days = ForecastParser::Parse(forecastFile);
         }
     }
-
 
     // GtkCssProvider *provider = gtk_css_provider_new ();
     // gtk_css_provider_load_from_path (provider, "gtk-widgets.css", NULL);
@@ -76,7 +80,7 @@ int main(int argc, char* argv[]) {
   	gtk_widget_override_background_color(window, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &black_color);
   	gtk_widget_show_all(window);
 
-	  bottomRow->Update(days);
+	bottomRow->Update(days);
 
     CurlThread curlThread;
     // curlThread.AddUrlToRetrieve(CurlThreadConfig("https://google.com", 15, "urlContents", "html",
