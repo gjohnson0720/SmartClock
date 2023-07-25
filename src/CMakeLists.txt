@@ -8,7 +8,7 @@ find_package(CURL REQUIRED)
 pkg_check_modules(GTK gtk+-3.0)
 include_directories(${GTK_INCLUDE_DIRS} ../inc ../json/include ${CURL_INCLUDE_DIR} /usr/include/gtk-3.0)
 link_directories(${GTK_LIBRARY_DIRS})
-link_libraries(${GTK_LIBRARIES} ${CURL_LIBRARIES})
+link_libraries(${GTK_LIBRARIES} ${CURL_LIBRARIES} pthread)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD 20)
