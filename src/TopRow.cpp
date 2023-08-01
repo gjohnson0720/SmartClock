@@ -12,6 +12,7 @@ TopRow::TopRow()
     tempLabel = new LabelWidget("   67", &red_color, 96);
     tempUnitsLabel = new LabelWidget("°F", &red_color, 20);
     dayLabel = new LabelWidget("Mon", &red_color, 96);
+    activityLabel = new LabelWidget(".", &red_color, 96);
 
     // gtk_widget_set_margin_start (ampmLabel->Widget(), 60);
 
@@ -23,6 +24,7 @@ TopRow::TopRow()
     gtk_box_pack_start ( GTK_BOX(rightColumn), tempRow, 0, 0, 0 );
     gtk_box_pack_start ( GTK_BOX(rightColumn), dayLabel->Widget(), 0, 0, 0 );
     gtk_box_pack_start ( GTK_BOX(rightColumn), dateLabel->Widget(), 0, 0, 0 );
+    gtk_box_pack_start ( GTK_BOX(rightColumn), activityLabel->Widget(), 0, 0, 0 );
     gtk_widget_set_valign  (rightColumn, GTK_ALIGN_CENTER);
 
     row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -49,7 +51,7 @@ gboolean TopRow::Update (gpointer data)
 void TopRow::Update()
 {
     char time_buffer[12];
-    char ampm_buffer[4];
+    char ampm_buffer[4] = {};
     char date_buffer[8];
     time_t now;
     time(&now);
@@ -65,10 +67,17 @@ void TopRow::Update()
     }
     if (tm->tm_hour > 12)
         tm->tm_hour -= 12;
+    
     sprintf (time_buffer, "%2d:%02d", tm->tm_hour, tm->tm_min);//, tm->tm_sec);
     timeLabel->SetText(time_buffer);
     ampmLabel->SetText(ampm_buffer);
-
+    activity = !activity;
+    if (activity)    
+        activityLabel->SetText(".");
+    else
+        activityLabel->SetText(" ");
     sprintf (date_buffer, "%2d/%02d", tm->tm_mon + 1, tm->tm_mday);
     dateLabel->SetText(date_buffer);
+
+
 }

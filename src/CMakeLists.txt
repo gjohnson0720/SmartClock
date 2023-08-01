@@ -13,7 +13,7 @@ link_libraries(${GTK_LIBRARIES} ${CURL_LIBRARIES} pthread)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_executable(${PROJECT_NAME} smart_clock.cpp LabelWidget.cpp TopRow.cpp BottomRow.cpp ForecastDayWidget.cpp CurlThread.cpp TimeUtils.cpp
+add_executable(${PROJECT_NAME} SmartClock.cpp LabelWidget.cpp TopRow.cpp BottomRow.cpp ForecastDayWidget.cpp CurlThread.cpp TimeUtils.cpp
                 ForecastParser.cpp)
 
 add_custom_command(TARGET SmartClock POST_BUILD

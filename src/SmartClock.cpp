@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
     //         std::cout << "Received contents: " << contents << std::endl;
     //     }) );
     curlThread.AddUrlToRetrieve(CurlThreadConfig("http://dataservice.accuweather.com/forecasts/v1/daily/5day/332120?apikey=E73cA2eAoUBJBCtEGvmSZamye4fl11ae&details=true",
-        60, "urlContents", "json",
+        30*60, "urlContents", "json",
     		[&](std::string contents)
         {
             //std::cout << "Received contents: " << contents << std::endl;
@@ -103,6 +103,6 @@ int main(int argc, char* argv[]) {
         }) );        
     curlThread.Start();
     gtk_window_fullscreen(GTK_WINDOW(window));
-	  gtk_main();
+	gtk_main();
 }
 

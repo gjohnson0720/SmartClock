@@ -19,8 +19,10 @@ private:
     LabelWidget* tempLabel;
     LabelWidget* tempUnitsLabel;
     LabelWidget* dayLabel;
+    LabelWidget* activityLabel;
     GtkWidget* row;
     gint timer;
+    bool activity;
 
     static gboolean Update (gpointer data);
     void Update();

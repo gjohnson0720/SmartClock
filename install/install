@@ -1,6 +1,8 @@
-1. Create an empty file with extension .sh and name it whatever you want.
+1. Edit the path in file SmartClock.sh to point to the folder you built SmartClock into
 
 2. Copy the file SmartClock.sh to /home/pi/SmartClock/build.
  
-3. Open /home/pi/.config/autostart folder. It might be different in your case. Just open your home folder and enable view hidden folders. open .config/autostart. If you don't see autostart folder, then create a folder called autostart within .config folder.  Copy SmartClock.desktop to this folder.
+3. Edit SmartClock.desktop with the paths to your SmartClock build folder.  Copy SmartClock.desktop to /home/pi/.config/autostart folder.
+   It might be different in your case. Just open your home folder and enable view hidden folders. open .config/autostart. If you don't see autostart folder, then create a folder called autostart within .config folder.  
+
 
