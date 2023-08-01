@@ -1,0 +1,6 @@
+[Desktop Entry]
+Comment=
+Exec=/home/pi/SmartClock/build/SmartClock.sh
+Name=SmartClock
+Path=/home/pi/SmartClock/build/SmartClock
+Type=Application
