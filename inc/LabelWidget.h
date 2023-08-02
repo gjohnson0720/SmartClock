@@ -6,12 +6,12 @@
 class LabelWidget
 {
 public:  
-    LabelWidget(std::string initialString = "", GdkRGBA* color = nullptr, int fontSize = -1);
+    LabelWidget(const std::string& initialString = "", GdkRGBA* color = nullptr, int fontSize = -1);
     ~LabelWidget();
 
     GtkWidget* Widget() { return label; }
 
-    void SetText(std::string text);
+    void SetText(const std::string& text);
 
 private:
     GtkWidget* label;

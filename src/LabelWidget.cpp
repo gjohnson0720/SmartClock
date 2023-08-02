@@ -3,7 +3,7 @@
 
 const static char* fontName = "FreeSans";
 
-LabelWidget::LabelWidget(std::string initialString, GdkRGBA* color_, int fontSize_) 
+LabelWidget::LabelWidget(const std::string& initialString, GdkRGBA* color_, int fontSize_) 
 {
     label = gtk_label_new(initialString.c_str());
     if (color_ != nullptr)
@@ -25,7 +25,7 @@ LabelWidget::~LabelWidget()
     
 }
 
-void LabelWidget::SetText(std::string text)
+void LabelWidget::SetText(const std::string& text)
 {
     gtk_label_set_text (GTK_LABEL (label), text.c_str());
 }
