@@ -15,4 +15,7 @@ public:
 
 private:
     GtkWidget* label;
+    static gboolean SetCb(gpointer userdata);
+    void SetInvoke(const std::string& text);
+    std::string text;
 };

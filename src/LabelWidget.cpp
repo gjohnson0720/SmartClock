@@ -25,7 +25,32 @@ LabelWidget::~LabelWidget()
     
 }
 
-void LabelWidget::SetText(const std::string& text)
+struct SetInfo
 {
-    gtk_label_set_text (GTK_LABEL (label), text.c_str());
+    LabelWidget* label;
+    std::string text;
+    SetInfo(LabelWidget* label_, std::string text_) : label(label_), text(text_) 
+    {
+        std::cout << text << std::endl;
+    }
+};
+
+void LabelWidget::SetText(const std::string& text_)
+{
+    SetInfo* info = new SetInfo(this, text_);
+    gdk_threads_add_idle(SetCb, info);
+    // g_main_context_invoke(NULL, SetCb, info);
+}
+
+gboolean LabelWidget::SetCb(gpointer userdata)
+{
+    SetInfo* info = (SetInfo*)userdata;
+    info->label->SetInvoke(info->text);
+    // delete info;
+    return G_SOURCE_CONTINUE;
+}
+
+void LabelWidget::SetInvoke(const std::string& text_)
+{
+    gtk_label_set_text (GTK_LABEL (label), text_.c_str());
 }

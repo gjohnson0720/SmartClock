@@ -24,7 +24,31 @@ ForecastDayWidget::~ForecastDayWidget()
     
 }
 
+
+struct SetInfo
+{
+    ForecastDayWidget* widget;
+    ForecastDayData data;
+    SetInfo(ForecastDayWidget* widget_, const ForecastDayData& data_) : widget(widget_), data(data_) {}
+};
+
 void ForecastDayWidget::SetData(const ForecastDayData& data_)
+{
+    SetInfo* info = new SetInfo(this, data_);
+    gdk_threads_add_idle(SetCb, info);
+    // g_main_context_invoke(NULL, SetCb, info);
+}
+
+
+gboolean ForecastDayWidget::SetCb(gpointer userdata)
+{
+    SetInfo* info = (SetInfo*)userdata;
+    info->widget->SetInvoke(info->data);
+    // delete info;
+    return G_SOURCE_CONTINUE;
+}
+
+void ForecastDayWidget::SetInvoke(const ForecastDayData& data_)
 {
     data = data_;
     dayLabel->SetText(data.Day);

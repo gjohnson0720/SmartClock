@@ -20,4 +20,7 @@ private:
     GtkWidget* dayImage;
 
     ForecastDayData data;
+
+    static gboolean SetCb(gpointer userdata);
+    void SetInvoke(const ForecastDayData& data_);
 };
