@@ -25,28 +25,16 @@ LabelWidget::~LabelWidget()
     
 }
 
-struct SetInfo
-{
-    LabelWidget* label;
-    std::string text;
-    SetInfo(LabelWidget* label_, std::string text_) : label(label_), text(text_) 
-    {
-        std::cout << text << std::endl;
-    }
-};
-
 void LabelWidget::SetText(const std::string& text_)
 {
-    SetInfo* info = new SetInfo(this, text_);
-    gdk_threads_add_idle(SetCb, info);
-    // g_main_context_invoke(NULL, SetCb, info);
+    text = text_;
+    gdk_threads_add_idle(SetCb, this);
 }
 
 gboolean LabelWidget::SetCb(gpointer userdata)
 {
-    SetInfo* info = (SetInfo*)userdata;
-    info->label->SetInvoke(info->text);
-    // delete info;
+    LabelWidget* label = (LabelWidget*)userdata;
+    label->SetInvoke(label->text);
     return G_SOURCE_CONTINUE;
 }
 

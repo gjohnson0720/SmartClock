@@ -34,23 +34,20 @@ struct SetInfo
 
 void ForecastDayWidget::SetData(const ForecastDayData& data_)
 {
-    SetInfo* info = new SetInfo(this, data_);
-    gdk_threads_add_idle(SetCb, info);
-    // g_main_context_invoke(NULL, SetCb, info);
+    data = data_;
+    gdk_threads_add_idle(SetCb, this);
 }
 
 
 gboolean ForecastDayWidget::SetCb(gpointer userdata)
 {
-    SetInfo* info = (SetInfo*)userdata;
-    info->widget->SetInvoke(info->data);
-    // delete info;
+    ForecastDayWidget* widget = (ForecastDayWidget*)userdata;
+    widget->SetInvoke(widget->data);
     return G_SOURCE_CONTINUE;
 }
 
 void ForecastDayWidget::SetInvoke(const ForecastDayData& data_)
 {
-    data = data_;
     dayLabel->SetText(data.Day);
     std::string temp = std::to_string(data.MinTemp) + "° / " + std::to_string(data.MaxTemp) + "°";
     dayTemp->SetText(temp);
