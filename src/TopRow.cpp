@@ -34,7 +34,7 @@ TopRow::TopRow()
     gtk_box_pack_start ( GTK_BOX(row), rightColumn, 0, 0, 0 );
     gtk_widget_set_valign  (timeLabel->Widget(), GTK_ALIGN_CENTER);
 
-    timer = g_timeout_add_seconds (1, Update, this);
+    timer = g_timeout_add_seconds (5, Update, this);
 }
 
 TopRow::~TopRow()
@@ -70,7 +70,7 @@ void TopRow::Update()
         tm->tm_hour -= 12;
     
     sprintf (time_buffer, "%2d:%02d", tm->tm_hour, tm->tm_min);//, tm->tm_sec);
-std::cout << time_buffer << std::endl;
+
     timeLabel->SetText(time_buffer);
     ampmLabel->SetText(ampm_buffer);
     activity = !activity;
