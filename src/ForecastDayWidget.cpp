@@ -25,13 +25,6 @@ ForecastDayWidget::~ForecastDayWidget()
 }
 
 
-struct SetInfo
-{
-    ForecastDayWidget* widget;
-    ForecastDayData data;
-    SetInfo(ForecastDayWidget* widget_, const ForecastDayData& data_) : widget(widget_), data(data_) {}
-};
-
 void ForecastDayWidget::SetData(const ForecastDayData& data_)
 {
     data = data_;

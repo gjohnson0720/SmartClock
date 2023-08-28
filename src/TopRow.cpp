@@ -1,6 +1,7 @@
 #include "TopRow.h"
 #include "LabelWidget.h"
 #include <iostream>
+#include <ctime>
 
 TopRow::TopRow()
 {
@@ -80,4 +81,7 @@ void TopRow::Update()
         activityLabel->SetText("    ");
     sprintf (date_buffer, "%2d/%02d", tm->tm_mon + 1, tm->tm_mday);
     dateLabel->SetText(date_buffer);
+    char timeString[10];
+    std::strftime(std::data(timeString), std::size(timeString), "%a", tm);
+    dayLabel->SetText(timeString);
 }
