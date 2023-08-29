@@ -34,6 +34,7 @@ TopRow::TopRow()
     gtk_box_pack_start ( GTK_BOX(row), timeLabel->Widget(), 0, 0, 0 );
     gtk_box_pack_start ( GTK_BOX(row), rightColumn, 0, 0, 0 );
     gtk_widget_set_valign  (timeLabel->Widget(), GTK_ALIGN_CENTER);
+    gtk_widget_set_halign  (row, GTK_ALIGN_CENTER);
 
     timer = g_timeout_add_seconds (5, Update, this);
 }

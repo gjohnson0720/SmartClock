@@ -6,10 +6,10 @@ ForecastDayWidget::ForecastDayWidget()
 {
     const static char* fontName = "FreeSans";
     GdkRGBA red_color {1.0, .0, .0, 1.0};
-    dayLabel = new LabelWidget("TODAY", &red_color, 24);
-    dayTemp = new LabelWidget("32° / 99°", &red_color, 24);
-    dayWeather = new LabelWidget("Sunny", &red_color, 24);
-    dayImage = gtk_image_new_from_file ("./images/1.svg");
+    dayLabel = new LabelWidget("", &red_color, 24);
+    dayTemp = new LabelWidget("", &red_color, 24);
+    dayWeather = new LabelWidget("", &red_color, 24);
+    dayImage = gtk_image_new_from_file ("does_not_exist.svg");
 
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_vexpand (box, TRUE);
@@ -21,7 +21,6 @@ ForecastDayWidget::ForecastDayWidget()
  
 ForecastDayWidget::~ForecastDayWidget()
 {
-    
 }
 
 

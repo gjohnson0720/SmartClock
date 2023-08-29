@@ -126,7 +126,7 @@ std::string CurlThread::RetrieveUrlFromCurl(const std::string& url)
             std::cout << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
         curl_easy_cleanup(curl);
 
-        std::cout << readBuffer << std::endl;
+        //std::cout << readBuffer << std::endl;
     }
     return readBuffer;
 }

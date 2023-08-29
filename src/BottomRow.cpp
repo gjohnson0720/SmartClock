@@ -15,6 +15,7 @@ BottomRow::BottomRow()
         gtk_box_pack_start ( GTK_BOX(row), forecastDays[i]->Widget(), 0, 0, 0 );
         gtk_widget_set_margin_start (forecastDays[i]->Widget(), 60);
     }
+    gtk_widget_set_halign  (row, GTK_ALIGN_CENTER);
 }
 
 BottomRow::~BottomRow()
