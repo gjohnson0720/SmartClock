@@ -6,6 +6,8 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include "log.h"
+
 namespace fs = std::filesystem;
 
 CurlThread::CurlThread()
@@ -123,7 +125,7 @@ std::string CurlThread::RetrieveUrlFromCurl(const std::string& url)
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
-            std::cout << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+            FILE_LOG(lerror)  << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
         curl_easy_cleanup(curl);
 
         //std::cout << readBuffer << std::endl;

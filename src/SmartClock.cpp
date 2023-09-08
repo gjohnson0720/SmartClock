@@ -7,6 +7,7 @@
 #include "BottomRow.h"
 #include "CurlThread.h"
 #include "ForecastParser.h"
+#include "log.h"
 
 static TopRow* topRow = nullptr;
 static BottomRow* bottomRow = nullptr;
@@ -16,14 +17,18 @@ static GtkWidget* screen = nullptr;
 int main(int argc, char* argv[]) {
     gtk_init(&argc, &argv);
 
-    if (__cplusplus == 202101L) std::cout << "C++23";
-    else if (__cplusplus == 202002L) std::cout << "C++20";
-    else if (__cplusplus == 201703L) std::cout << "C++17";
-    else if (__cplusplus == 201402L) std::cout << "C++14";
-    else if (__cplusplus == 201103L) std::cout << "C++11";
-    else if (__cplusplus == 199711L) std::cout << "C++98";
-    else std::cout << "pre-standard C++." << __cplusplus;
-    std::cout << "\n";
+    FILELog::ReportingLevel() = ldebug3;
+    FILE* log_fd = fopen( "SmartClock.log", "w" );
+    Output2FILE::Stream() = log_fd;
+
+    if (__cplusplus == 202101L) FILE_LOG(linfo) << "C++23";
+    else if (__cplusplus == 202002L) FILE_LOG(linfo) << "C++20";
+    else if (__cplusplus == 201703L) FILE_LOG(linfo) << "C++17";
+    else if (__cplusplus == 201402L) FILE_LOG(linfo) << "C++14";
+    else if (__cplusplus == 201103L) FILE_LOG(linfo) << "C++11";
+    else if (__cplusplus == 199711L) FILE_LOG(linfo) << "C++98";
+    else FILE_LOG(linfo) << "pre-standard C++." << __cplusplus;
+    FILE_LOG(linfo) << "\n";
 
     std::vector<ForecastDayData> days;
 
