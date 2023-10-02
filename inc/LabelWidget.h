@@ -15,7 +15,6 @@ public:
 
 private:
     GtkWidget* label;
-    static gboolean SetCb(gpointer userdata);
-    void SetInvoke(const std::string& text);
+    PangoFontDescription *font_description;
     std::string text;
 };

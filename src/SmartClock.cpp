@@ -14,6 +14,13 @@ static BottomRow* bottomRow = nullptr;
 static GtkWidget* screen = nullptr;
 
 
+std::vector<ForecastDayData> days;
+static gboolean HandleForecast(gpointer userdata)
+{
+    bottomRow->Update(days);
+    return G_SOURCE_REMOVE;
+}
+
 int main(int argc, char* argv[]) {
     gtk_init(&argc, &argv);
 
@@ -30,7 +37,6 @@ int main(int argc, char* argv[]) {
     else FILE_LOG(linfo) << "pre-standard C++." << __cplusplus;
     FILE_LOG(linfo) << "\n";
 
-    std::vector<ForecastDayData> days;
 
     if (argc >= 2)
     {
@@ -40,7 +46,6 @@ int main(int argc, char* argv[]) {
             std::cout << "    --forecastFile=<filename>   File path for the forecast json file from accuweather.com instead of doing a curl call" << std::endl;
             return 1;
         }
-        
 
         std::string arg1 = argv[1];
         auto index = arg1.find("--forecastFile=");
@@ -77,7 +82,7 @@ int main(int argc, char* argv[]) {
     gtk_box_pack_start ( GTK_BOX(screen), bottomRow->Widget(), 0, 0, 0 );
 
   	auto* window = gtk_window_new(GtkWindowType::GTK_WINDOW_TOPLEVEL);
-  	gtk_window_set_title(GTK_WINDOW(window), "Hello world (label)");
+  	gtk_window_set_title(GTK_WINDOW(window), "SmartClock");
   	gtk_window_set_default_size(GTK_WINDOW(window), 1024, 768);
   	g_signal_connect (window, "destroy", G_CALLBACK(gtk_main_quit), nullptr);
     gtk_container_add ( GTK_CONTAINER ( window ), screen );
@@ -102,12 +107,12 @@ int main(int argc, char* argv[]) {
         30*60, "urlContents", "json",
     		[&](std::string contents)
         {
-            //std::cout << "Received contents: " << contents << std::endl;
+            std::cout << "Received weather contents: " << std::endl;//contents << std::endl;
             days = ForecastParser::Parse(contents);
-            bottomRow->Update(days);
+            gdk_threads_add_idle(HandleForecast, nullptr);
         }) );        
     curlThread.Start();
-    gtk_window_fullscreen(GTK_WINDOW(window));
+    //gtk_window_fullscreen(GTK_WINDOW(window));
 	gtk_main();
 }
 

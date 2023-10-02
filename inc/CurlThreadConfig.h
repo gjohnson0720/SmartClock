@@ -19,7 +19,7 @@ struct CurlThreadConfig
         : url(url_), fetchEverySecs(fetchEverySecs_), urlContentsCallback(cb_), 
             outputFolder(outputFolder_), fileExtension(fileExtension_)
     {
-        timeToFetchUrlContents = std::chrono::system_clock::now();
+        SetNextTime();
     }
 
     std::chrono::system_clock::duration GetTimeDelta() const

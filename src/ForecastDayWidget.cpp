@@ -26,25 +26,17 @@ ForecastDayWidget::~ForecastDayWidget()
 
 void ForecastDayWidget::SetData(const ForecastDayData& data_)
 {
-    data = data_;
-    gdk_threads_add_idle(SetCb, this);
+    if (data != data_)
+    {
+        data = data_;
+        dayLabel->SetText(data.Day);
+        std::string temp = std::to_string(data.MinTemp) + "° / " + std::to_string(data.MaxTemp) + "°";
+        dayTemp->SetText(temp);
+        dayWeather->SetText(data.Description);
+        std::stringstream s;
+        s << "./images/" << data.Icon << ".svg";
+        gtk_image_clear((GtkImage*)dayImage);
+        gtk_image_set_from_file((GtkImage*)dayImage, s.str().c_str());
+    }
 }
 
-
-gboolean ForecastDayWidget::SetCb(gpointer userdata)
-{
-    ForecastDayWidget* widget = (ForecastDayWidget*)userdata;
-    widget->SetInvoke(widget->data);
-    return G_SOURCE_CONTINUE;
-}
-
-void ForecastDayWidget::SetInvoke(const ForecastDayData& data_)
-{
-    dayLabel->SetText(data.Day);
-    std::string temp = std::to_string(data.MinTemp) + "° / " + std::to_string(data.MaxTemp) + "°";
-    dayTemp->SetText(temp);
-    dayWeather->SetText(data.Description);
-    std::stringstream s;
-    s << "./images/" << data.Icon << ".svg";
-    gtk_image_set_from_file((GtkImage*)dayImage, s.str().c_str());
-}

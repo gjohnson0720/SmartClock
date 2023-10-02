@@ -1,6 +1,7 @@
 #include "BottomRow.h"
 #include "LabelWidget.h"
 #include "ForecastDayWidget.h"
+#include "log.h"
 
 BottomRow::BottomRow()
 {
@@ -24,9 +25,11 @@ BottomRow::~BottomRow()
 
 void BottomRow::Update(const std::vector<ForecastDayData>& data)
 {
+    FILE_LOG(linfo) << " BottomRow Update start" << std::endl;
     auto numDays = std::min(forecastDays.size(), data.size());
     for(int i = 0; i < numDays; i++)
     {
         forecastDays[i]->SetData(data[i]);
     }
+    FILE_LOG(linfo) << " BottomRow Update done" << std::endl;
 }

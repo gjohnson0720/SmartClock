@@ -159,6 +159,7 @@ inline std::string NowTime()
 
 #include <sys/time.h>
 #include <sstream>
+#include <ctime>
 
 inline std::string NowTime()
 {

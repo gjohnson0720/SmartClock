@@ -45,23 +45,28 @@ std::string CurlThread::GetFilePath(const CurlThreadConfig& config)
 
 void CurlThread::Run()
 {
+    using namespace std::chrono;using namespace std::chrono;
+    FILE_LOG(linfo) << " CurlThread start" << std::endl;
     for (auto& c : configs)
     {
         RetrieveUrl(c);
     }
+    FILE_LOG(linfo) << " CurlThread after RetrieveUrl" << std::endl;
     while (true)
     {
         auto config = FindNextWaitTime();
         if (config == nullptr)
         {
-            std::cout << "No Curl config found, exiting thread" << std::endl;
+            FILE_LOG(linfo) << "No Curl config found, exiting thread" << std::endl;
             return;
         }
         auto diff = config->GetTimeDelta();
-        std::cout << "Sleeping for " << (diff.count() / 1000000) << " msecs" << std::endl;
+        FILE_LOG(linfo) << " Sleeping for " << (diff.count() / 1000000) << " msecs" << std::endl;
         std::this_thread::sleep_for(diff);
+        FILE_LOG(linfo) << " CurlThread woke" << std::endl;
         RetrieveUrl(*config);
         config->SetNextTime();
+        FILE_LOG(linfo) << " CurlThread after RetrieveUrl2" << std::endl;
     }
 }
 

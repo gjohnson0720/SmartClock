@@ -12,7 +12,7 @@ LabelWidget::LabelWidget(const std::string& initialString, GdkRGBA* color_, int 
     }
     if (fontSize_ > 0)
     {
-        PangoFontDescription *font_description = pango_font_description_new();
+        font_description = pango_font_description_new();
         pango_font_description_set_family(font_description, fontName);
         pango_font_description_set_size(font_description, fontSize_ * PANGO_SCALE);
         pango_font_description_set_weight(font_description, PangoWeight::PANGO_WEIGHT_BOLD);
@@ -22,23 +22,15 @@ LabelWidget::LabelWidget(const std::string& initialString, GdkRGBA* color_, int 
 
 LabelWidget::~LabelWidget()
 {
-    
+    if(font_description != nullptr)
+    {
+        pango_font_description_free(font_description);
+        font_description = nullptr;
+    }
 }
 
 void LabelWidget::SetText(const std::string& text_)
 {
     text = text_;
-    gdk_threads_add_idle(SetCb, this);
-}
-
-gboolean LabelWidget::SetCb(gpointer userdata)
-{
-    LabelWidget* label = (LabelWidget*)userdata;
-    label->SetInvoke(label->text);
-    return G_SOURCE_CONTINUE;
-}
-
-void LabelWidget::SetInvoke(const std::string& text_)
-{
-    gtk_label_set_text (GTK_LABEL (label), text_.c_str());
+    gtk_label_set_text (GTK_LABEL (label), text.c_str());
 }

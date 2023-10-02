@@ -10,4 +10,11 @@ struct ForecastDayData
     int MaxTemp;
     int Icon;
     std::string Description;
+
+    bool operator==(const ForecastDayData& other) const
+    {
+        return DateTime == other.DateTime && Day == other.Day && 
+                MinTemp == other.MinTemp && MaxTemp == other.MaxTemp &&
+                Icon == other.Icon && Description == other.Description;
+    }
 };
