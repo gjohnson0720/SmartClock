@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
             gdk_threads_add_idle(HandleForecast, nullptr);
         }) );        
     curlThread.Start();
-    //gtk_window_fullscreen(GTK_WINDOW(window));
+    gtk_window_fullscreen(GTK_WINDOW(window));
 	gtk_main();
 }
 
