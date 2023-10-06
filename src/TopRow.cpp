@@ -92,3 +92,10 @@ void TopRow::Update()
     }
     FILE_LOG(linfo) << "TopRow Update done" << std::endl;
 }
+
+void TopRow::UpdateGarageTemp(float value)
+{
+    std::stringstream s;
+    s << value;
+    tempLabel->SetText(s.str());
+}

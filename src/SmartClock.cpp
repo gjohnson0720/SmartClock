@@ -6,6 +6,7 @@
 #include "TopRow.h"
 #include "BottomRow.h"
 #include "CurlThread.h"
+#include "MqttThread.h"
 #include "ForecastParser.h"
 #include "log.h"
 
@@ -20,6 +21,15 @@ static gboolean HandleForecast(gpointer userdata)
     bottomRow->Update(days);
     return G_SOURCE_REMOVE;
 }
+
+static gboolean HandleGarageTemp(gpointer userdata)
+{
+    uintptr_t pValue = (uintptr_t)userdata;
+    float value = *(float*)(&pValue);
+    topRow->UpdateGarageTemp(value);
+    return G_SOURCE_REMOVE;
+}
+
 
 int main(int argc, char* argv[]) {
     gtk_init(&argc, &argv);
@@ -112,6 +122,15 @@ int main(int argc, char* argv[]) {
             gdk_threads_add_idle(HandleForecast, nullptr);
         }) );        
     curlThread.Start();
+
+    MqttThread mqttThread([&](float garageTemp)
+    {
+        std::cout << "Received garage temp contents: " << garageTemp << std::endl;
+        uintptr_t value = *(uint32_t*)(&garageTemp);
+        gdk_threads_add_idle(HandleGarageTemp, (void*)value);
+    });
+    mqttThread.Start();
+
     gtk_window_fullscreen(GTK_WINDOW(window));
 	gtk_main();
 }

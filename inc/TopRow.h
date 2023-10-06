@@ -14,6 +14,8 @@ public:
 
     GtkWidget* Widget() { return row; }
 
+    void UpdateGarageTemp(float value);
+
 private:
     std::unique_ptr<LabelWidget> timeLabel;
     std::unique_ptr<LabelWidget> ampmLabel;

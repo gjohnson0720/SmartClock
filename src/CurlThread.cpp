@@ -45,7 +45,7 @@ std::string CurlThread::GetFilePath(const CurlThreadConfig& config)
 
 void CurlThread::Run()
 {
-    using namespace std::chrono;using namespace std::chrono;
+    using namespace std::chrono;
     FILE_LOG(linfo) << " CurlThread start" << std::endl;
     for (auto& c : configs)
     {
