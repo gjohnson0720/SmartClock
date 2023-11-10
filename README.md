@@ -19,24 +19,16 @@ Configure Mosquitto
 4) sudo systemctl restart mosquitto
 
 
-Build Paho mqtt
-Building the Paho C library
+Setup to build on Linux
+sudo apt install git cmake build-essential pkg-config libcurl4-gnutls-dev mosquitto mosquitto-clients libmosquitto-dev libgtk-3-dev
 
-Before building the C++ library, first, build and install the Paho C library, if not already present. Note, this version of the C++ library requires Paho C v1.3.8 or greater.
+git clone https://github.com/gjohnson0720/SmartClock.git
 
-$ git clone https://github.com/eclipse/paho.mqtt.c.git
-$ cd paho.mqtt.c
-$ git checkout v1.3.8
 
-$ cmake -Bbuild -H. -DPAHO_ENABLE_TESTING=OFF -DPAHO_BUILD_STATIC=ON \
-    -DPAHO_WITH_SSL=OFF -DPAHO_HIGH_PERFORMANCE=ON
-$ sudo cmake --build build/ --target install
-$ sudo ldconfig
+cd SmartClock
+git clone https://github.com/nlohmann/json.git json  -- need to fix repo to pull this automatically
+mkdir build
+cd build
+cmake ..
+make
 
-git clone https://github.com/eclipse/paho.mqtt.cpp
-$ cd paho.mqtt.cpp
-
-$ cmake -Bbuild -H. -DPAHO_BUILD_STATIC=ON -DPAHO_BUILD_DOCUMENTATION=FALSE -DPAHO_BUILD_SAMPLES=TRUE -DPAHO_WITH_SSL=OFF
-
-$ sudo cmake --build build/ --target install
-$ sudo ldconfig
