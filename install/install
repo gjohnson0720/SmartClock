@@ -6,3 +6,10 @@
    It might be different in your case. Just open your home folder and enable view hidden folders. open .config/autostart. If you don't see autostart folder, then create a folder called autostart within .config folder.  
 
 
+
+Disable screen blanking
+https://pimylifeup.com/raspberry-pi-disable-screen-blanking/
+
+
+
+sudo apt install mosquitto mostquitto-clients libmosquitto-dev

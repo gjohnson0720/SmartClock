@@ -19,24 +19,18 @@ Configure Mosquitto
 4) sudo systemctl restart mosquitto
 
 
-Build Paho mqtt
-Building the Paho C library
+1. Edit the path in file SmartClock.sh to point to the folder you built SmartClock into
 
-Before building the C++ library, first, build and install the Paho C library, if not already present. Note, this version of the C++ library requires Paho C v1.3.8 or greater.
+2. Copy the file SmartClock.sh to /home/pi/SmartClock/build.
+ 
+3. Edit SmartClock.desktop with the paths to your SmartClock build folder.  Copy SmartClock.desktop to /home/pi/.config/autostart folder.
+   It might be different in your case. Just open your home folder and enable view hidden folders. open .config/autostart. If you don't see autostart folder, then create a folder called autostart within .config folder.  
 
-$ git clone https://github.com/eclipse/paho.mqtt.c.git
-$ cd paho.mqtt.c
-$ git checkout v1.3.8
 
-$ cmake -Bbuild -H. -DPAHO_ENABLE_TESTING=OFF -DPAHO_BUILD_STATIC=ON \
-    -DPAHO_WITH_SSL=OFF -DPAHO_HIGH_PERFORMANCE=ON
-$ sudo cmake --build build/ --target install
-$ sudo ldconfig
 
-git clone https://github.com/eclipse/paho.mqtt.cpp
-$ cd paho.mqtt.cpp
+Disable screen blanking
+https://pimylifeup.com/raspberry-pi-disable-screen-blanking/
 
-$ cmake -Bbuild -H. -DPAHO_BUILD_STATIC=ON -DPAHO_BUILD_DOCUMENTATION=FALSE -DPAHO_BUILD_SAMPLES=TRUE -DPAHO_WITH_SSL=OFF
 
-$ sudo cmake --build build/ --target install
-$ sudo ldconfig
+
+sudo apt install mosquitto libmosquitto-dev
