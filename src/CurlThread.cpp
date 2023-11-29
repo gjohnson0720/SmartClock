@@ -47,6 +47,7 @@ void CurlThread::Run()
 {
     using namespace std::chrono;
     FILE_LOG(linfo) << " CurlThread start" << std::endl;
+    curl_global_init(0);
     for (auto& c : configs)
     {
         RetrieveUrl(c);
@@ -54,20 +55,28 @@ void CurlThread::Run()
     FILE_LOG(linfo) << " CurlThread after RetrieveUrl" << std::endl;
     while (true)
     {
-        auto config = FindNextWaitTime();
-        if (config == nullptr)
+        try
         {
-            FILE_LOG(linfo) << "No Curl config found, exiting thread" << std::endl;
-            return;
+            auto config = FindNextWaitTime();
+            if (config == nullptr)
+            {
+                FILE_LOG(linfo) << "No Curl config found, exiting thread" << std::endl;
+                return;
+            }
+            auto diff = config->GetTimeDelta();
+            FILE_LOG(linfo) << " Sleeping for " << (diff.count() / 1000000) << " msecs" << std::endl;
+            std::this_thread::sleep_for(diff);
+            FILE_LOG(linfo) << " CurlThread woke" << std::endl;
+            RetrieveUrl(*config);
+            config->SetNextTime();
+            FILE_LOG(linfo) << " CurlThread after RetrieveUrl2" << std::endl;
         }
-        auto diff = config->GetTimeDelta();
-        FILE_LOG(linfo) << " Sleeping for " << (diff.count() / 1000000) << " msecs" << std::endl;
-        std::this_thread::sleep_for(diff);
-        FILE_LOG(linfo) << " CurlThread woke" << std::endl;
-        RetrieveUrl(*config);
-        config->SetNextTime();
-        FILE_LOG(linfo) << " CurlThread after RetrieveUrl2" << std::endl;
+        catch(const std::exception& e)
+        {
+            FILE_LOG(lerror) << "Exception thrown" << e.what() << std::endl;
+        }
     }
+    curl_global_cleanup();
 }
 
 void CurlThread::RetrieveUrl(const CurlThreadConfig& config)

@@ -132,6 +132,14 @@ int main(int argc, char* argv[]) {
     mqttThread.Start();
 
     gtk_window_fullscreen(GTK_WINDOW(window));
-	gtk_main();
+
+    try
+    {
+	    gtk_main();
+    }
+    catch(const std::exception& e)
+    {
+        FILE_LOG(lerror) << "Exception thrown" << e.what() << std::endl;
+    }
 }
 

@@ -51,7 +51,14 @@ void MqttThread::Run()
         FILE_LOG(linfo) << "MqttThread subscribe to topic " << GARAGE_TEMP_TOPIC << " failed" << std::endl;
     }
 
-    iot_client->loop_forever(-1, 1);
+    try
+    {
+        iot_client->loop_forever(-1, 1);
+    }
+    catch(const std::exception& e)
+    {
+        FILE_LOG(lerror) << "Exception thrown" << e.what() << std::endl;
+    }
 }
 
 void MqttThread::OnConnect(int rc)
