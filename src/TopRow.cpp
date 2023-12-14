@@ -54,7 +54,7 @@ gboolean TopRow::Update (gpointer data)
 
 void TopRow::Update()
 {
-    FILE_LOG(linfo) << "TopRow Update start" << std::endl;
+    // FILE_LOG(linfo) << "TopRow Update start" << std::endl;
     char time_buffer[12] = {};
     char ampm_buffer[4] = {};
     char date_buffer[8] = {};
@@ -90,7 +90,7 @@ void TopRow::Update()
         std::strftime(std::data(timeString), std::size(timeString), "%a", tm);
         dayLabel->SetText(timeString);
     }
-    FILE_LOG(linfo) << "TopRow Update done" << std::endl;
+    // FILE_LOG(linfo) << "TopRow Update done" << std::endl;
 }
 
 void TopRow::UpdateGarageTemp(float value)
