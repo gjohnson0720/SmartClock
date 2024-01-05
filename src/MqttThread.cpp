@@ -6,7 +6,7 @@
 #include <iostream>
 
 #define CLIENT_ID "Client_ID"
-#define BROKER_ADDRESS "192.168.2.7"
+#define BROKER_ADDRESS "localhost"//"192.168.2.13"
 #define MQTT_PORT 1883;
 #define GARAGE_TEMP_TOPIC "home/garage/temperature"
 #define MAX_PAYLOAD 50
