@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
     SmartClock.cpp 
     TimeUtils.cpp
     TopRow.cpp 
+    Utilities.cpp
 )
 
 add_custom_command(TARGET SmartClock POST_BUILD
