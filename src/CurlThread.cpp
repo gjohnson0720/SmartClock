@@ -21,7 +21,8 @@ CurlThread::~CurlThread()
 void CurlThread::AddUrlToRetrieve(const CurlThreadConfig& config)
 {
     configs.push_back(config);
-    fs::create_directories(config.outputFolder);
+    if (!config.outputFolder.empty())
+        fs::create_directories(config.outputFolder);
 }
 
 void CurlThread::Start()

@@ -47,13 +47,14 @@ int main(int argc, char* argv[]) {
     else FILE_LOG(linfo) << "pre-standard C++." << __cplusplus;
     FILE_LOG(linfo) << "\n";
 
-
+    auto saveForecasts = false;
     if (argc >= 2)
     {
         if (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")
         {
             std::cout << "Usage " << argv[0] << " [options]" <<std::endl;
             std::cout << "    --forecastFile=<filename>   File path for the forecast json file from accuweather.com instead of doing a curl call" << std::endl;
+            std::cout << "    --saveForecasts             Writes the forecast json to files" << std::endl;
             return 1;
         }
 
@@ -74,6 +75,7 @@ int main(int argc, char* argv[]) {
                 days = ForecastParser::Parse(forecastFile);
             }
         }
+        saveForecasts = (arg1.find("--saveForecasts") != std::string::npos);
     }
 
     // GtkCssProvider *provider = gtk_css_provider_new ();
@@ -113,14 +115,19 @@ int main(int argc, char* argv[]) {
     //     {
     //         std::cout << "Received contents: " << contents << std::endl;
     //     }) );
-    curlThread.AddUrlToRetrieve(CurlThreadConfig("http://dataservice.accuweather.com/forecasts/v1/daily/5day/332120?apikey=E73cA2eAoUBJBCtEGvmSZamye4fl11ae&details=true",
-        30*60, "urlContents", "json",
-    		[&](std::string contents)
+    CurlThreadConfig curlConfig(
+        "http://dataservice.accuweather.com/forecasts/v1/daily/5day/332120?apikey=E73cA2eAoUBJBCtEGvmSZamye4fl11ae&details=true",
+        30*60,
+        (saveForecasts ? "urlContents" : ""), 
+        "json",
+        [&](std::string contents)
         {
             std::cout << "Received weather contents: " << std::endl;//contents << std::endl;
             days = ForecastParser::Parse(contents);
             gdk_threads_add_idle(HandleForecast, nullptr);
-        }) );        
+        }
+    );
+    curlThread.AddUrlToRetrieve(curlConfig);        
     curlThread.Start();
 
     MqttThread mqttThread([&](float garageTemp)

@@ -6,7 +6,7 @@
 #include "Utilities.h"
 
 #define CLIENT_ID "SmartClock-"
-#define BROKER_ADDRESS "192.168.2.13"
+#define BROKER_ADDRESS "SmartClock.local"
 #define MQTT_PORT 1883;
 #define GARAGE_TEMP_TOPIC "home/garage/temperature"
 #define MAX_PAYLOAD 50

@@ -12,7 +12,7 @@ TopRow::TopRow()
     timeLabel.reset(new LabelWidget("        ", &red_color, 400));
     ampmLabel.reset(new LabelWidget("", &red_color, 36));
     dateLabel.reset(new LabelWidget("     ", &red_color, 96));
-    tempLabel.reset(new LabelWidget("   67", &red_color, 96));
+    tempLabel.reset(new LabelWidget("     ", &red_color, 96));
     tempUnitsLabel.reset(new LabelWidget("°F", &red_color, 20));
     dayLabel.reset(new LabelWidget("Mon", &red_color, 96));
     activityLabel.reset(new LabelWidget(".", &red_color, 96));
@@ -63,6 +63,8 @@ void TopRow::Update()
     struct tm *tm = localtime(&now);
     if (tm->tm_hour > 12)
         tm->tm_hour -= 12;
+    if (tm->tm_hour == 0)
+        tm->tm_hour = 12;
     sprintf (time_buffer, "%2d:%02d", tm->tm_hour, tm->tm_min);//, tm->tm_sec);
     if (current_time != time_buffer)
     {
