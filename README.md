@@ -68,4 +68,7 @@ https://pimylifeup.com/raspberry-pi-disable-screen-blanking/
 - select 2 -> Screen Blanking -> No
 
 
-sudo apt install mosquitto libmosquitto-dev
+To hide the mouse cursor
+- sudo apt-get install unclutter
+- crontab -e
+- add line "@reboot unclutter -idle 0.01 -root"
