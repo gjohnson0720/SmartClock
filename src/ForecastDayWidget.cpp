@@ -33,10 +33,8 @@ void ForecastDayWidget::SetData(const ForecastDayData& data_)
         std::string temp = std::to_string(data.MinTemp) + "° / " + std::to_string(data.MaxTemp) + "°";
         dayTemp->SetText(temp);
         dayWeather->SetText(data.Description);
-        std::stringstream s;
-        s << "./images/" << data.Icon << ".svg";
         gtk_image_clear((GtkImage*)dayImage);
-        gtk_image_set_from_file((GtkImage*)dayImage, s.str().c_str());
+        gtk_image_set_from_file((GtkImage*)dayImage, data.Icon.c_str());
     }
 }
 

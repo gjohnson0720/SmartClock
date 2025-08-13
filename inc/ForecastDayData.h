@@ -8,7 +8,7 @@ struct ForecastDayData
     std::string Day;
     int MinTemp;
     int MaxTemp;
-    int Icon;
+    std::string Icon;
     std::string Description;
 
     bool operator==(const ForecastDayData& other) const

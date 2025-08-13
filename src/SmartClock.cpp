@@ -7,7 +7,7 @@
 #include "BottomRow.h"
 #include "CurlThread.h"
 #include "MqttThread.h"
-#include "ForecastParser.h"
+#include "WeatherIOForecastParser.h"
 #include "log.h"
 
 static TopRow* topRow = nullptr;
@@ -47,6 +47,8 @@ int main(int argc, char* argv[]) {
     else FILE_LOG(linfo) << "pre-standard C++." << __cplusplus;
     FILE_LOG(linfo) << "\n";
 
+    WeatherIOForecastParser parser;
+
     auto saveForecasts = false;
     if (argc >= 2)
     {
@@ -72,7 +74,7 @@ int main(int argc, char* argv[]) {
                     std::cout << "Could not open forecast file " << forecastFileName << std::endl;
                     return 1;
                 }
-                days = ForecastParser::Parse(forecastFile);
+                days = parser.Parse(forecastFile);
             }
         }
         saveForecasts = (arg1.find("--saveForecasts") != std::string::npos);
@@ -115,15 +117,16 @@ int main(int argc, char* argv[]) {
     //     {
     //         std::cout << "Received contents: " << contents << std::endl;
     //     }) );
+
     CurlThreadConfig curlConfig(
-        "http://dataservice.accuweather.com/forecasts/v1/daily/5day/332120?apikey=E73cA2eAoUBJBCtEGvmSZamye4fl11ae&details=true",
+        parser.GetURL(),
         30*60,
         (saveForecasts ? "urlContents" : ""), 
         "json",
         [&](std::string contents)
         {
             std::cout << "Received weather contents: " << std::endl;//contents << std::endl;
-            days = ForecastParser::Parse(contents);
+            days = parser.Parse(contents);
             gdk_threads_add_idle(HandleForecast, nullptr);
         }
     );

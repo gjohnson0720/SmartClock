@@ -15,10 +15,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(${PROJECT_NAME} 
+    AccuWeatherForecastParser.cpp
     BottomRow.cpp 
     CurlThread.cpp 
     ForecastDayWidget.cpp 
-    ForecastParser.cpp
     LabelWidget.cpp 
     mosquittopp.cpp
     MqttThread.cpp
@@ -26,6 +26,7 @@ add_executable(${PROJECT_NAME}
     TimeUtils.cpp
     TopRow.cpp 
     Utilities.cpp
+    WeatherIOForecastParser.cpp
 )
 
 add_custom_command(TARGET SmartClock POST_BUILD
