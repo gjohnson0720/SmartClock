@@ -9,6 +9,7 @@
 #include "log.h"
 
 namespace fs = std::filesystem;
+using namespace std::chrono_literals;
 
 CurlThread::CurlThread()
 {
@@ -82,21 +83,28 @@ void CurlThread::Run()
 
 void CurlThread::RetrieveUrl(const CurlThreadConfig& config)
 {
-    auto contents = RetrieveUrl(config.url);
-    config.urlContentsCallback(contents);
-    if (!config.outputFolder.empty())
+    for (int i = 0; i < 5; i++)
     {
-        auto filePath = GetFilePath(config);
-        std::ofstream file(filePath);
-        file << "<!--" << config.url << "-->" << std::endl;
-        file << contents;
-        file.close();
+        auto contents = RetrieveUrl(config.url);
+        if (contents.empty())
+        {
+            std::this_thread::sleep_for(500ms);
+            continue;
+        }
+        config.urlContentsCallback(contents);
+        if (!config.outputFolder.empty())
+        {
+            auto filePath = GetFilePath(config);
+            std::ofstream file(filePath);
+            file << "<!--" << config.url << "-->" << std::endl;
+            file << contents;
+            file.close();
+        }
     }
 }
 
 CurlThreadConfig* CurlThread::FindNextWaitTime()
 {
-    using namespace std::chrono_literals;
     CurlThreadConfig* config = nullptr;
     auto minDiff = std::chrono::system_clock::duration::max();
     for (auto& c : configs)

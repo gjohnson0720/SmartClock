@@ -9,5 +9,6 @@ else()
   set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
 endif()
 
+include_directories(json/includes)
 add_subdirectory(src)
 set(CMAKE_BUILD_TYPE Debug)	
