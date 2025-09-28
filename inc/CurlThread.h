@@ -4,6 +4,8 @@
 #include <list>
 #include "CurlThreadConfig.h"
 #include <chrono>
+#include <condition_variable>
+#include <mutex>
 
 class CurlThread
 {
@@ -16,6 +18,9 @@ public:
 
 private:
     std::thread thread;
+    std::atomic<bool> stopFlag{false};
+    std::condition_variable cv;
+    std::mutex cv_m;
     std::list<CurlThreadConfig> configs;
 
     void Run();

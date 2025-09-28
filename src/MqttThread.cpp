@@ -18,8 +18,8 @@ MqttThread::MqttThread(std::function<void(float)> _garageTempCallback) : garageT
 
 MqttThread::~MqttThread()
 {
-    iot_client->loop_stop();
     iot_client->disconnect();
+    iot_client->loop_stop();
     iot_client.reset();
     mosqpp::lib_cleanup();
 }

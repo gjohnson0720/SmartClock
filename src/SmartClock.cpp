@@ -30,7 +30,6 @@ static gboolean HandleGarageTemp(gpointer userdata)
     return G_SOURCE_REMOVE;
 }
 
-
 int main(int argc, char* argv[]) {
     gtk_init(&argc, &argv);
 
@@ -102,8 +101,12 @@ int main(int argc, char* argv[]) {
     gtk_container_add ( GTK_CONTAINER ( window ), screen );
   	GdkRGBA black_color {.0, .0, .0, 1.0};
   	gtk_widget_override_background_color(window, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &black_color);
-  	gtk_widget_show_all(window);
+    gtk_widget_show_all(window);
+    gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    gtk_window_fullscreen(GTK_WINDOW(window));
 
+   
 	bottomRow->Update(days);
 
     CurlThread curlThread;
@@ -141,7 +144,6 @@ int main(int argc, char* argv[]) {
     });
     mqttThread.Start();
 
-    gtk_window_fullscreen(GTK_WINDOW(window));
 
     try
     {

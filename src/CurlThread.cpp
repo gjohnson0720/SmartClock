@@ -17,6 +17,12 @@ CurlThread::CurlThread()
 
 CurlThread::~CurlThread()
 {
+    stopFlag = true; 
+    cv.notify_one();
+    if (thread.joinable()) 
+    {
+        thread.join(); 
+    }
 }
 
 void CurlThread::AddUrlToRetrieve(const CurlThreadConfig& config)
@@ -55,7 +61,8 @@ void CurlThread::Run()
         RetrieveUrl(c);
     }
     FILE_LOG(linfo) << " CurlThread after RetrieveUrl" << std::endl;
-    while (true)
+    std::unique_lock<std::mutex> lock(cv_m);
+    while (!stopFlag)
     {
         try
         {
@@ -67,7 +74,9 @@ void CurlThread::Run()
             }
             auto diff = config->GetTimeDelta();
             FILE_LOG(linfo) << " Sleeping for " << (diff.count() / 1000000) << " msecs" << std::endl;
-            std::this_thread::sleep_for(diff);
+            cv.wait_for(lock, diff, [this]() {
+                return stopFlag.load();
+            });
             FILE_LOG(linfo) << " CurlThread woke" << std::endl;
             RetrieveUrl(*config);
             config->SetNextTime();
