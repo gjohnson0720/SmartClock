@@ -102,9 +102,9 @@ int main(int argc, char* argv[]) {
   	GdkRGBA black_color {.0, .0, .0, 1.0};
   	gtk_widget_override_background_color(window, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &black_color);
     gtk_widget_show_all(window);
-    gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
-    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-    gtk_window_fullscreen(GTK_WINDOW(window));
+    // gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
+    // gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    // gtk_window_fullscreen(GTK_WINDOW(window));
 
    
 	bottomRow->Update(days);
@@ -144,6 +144,7 @@ int main(int argc, char* argv[]) {
     });
     mqttThread.Start();
 
+    gtk_window_fullscreen(GTK_WINDOW(window));
 
     try
     {
