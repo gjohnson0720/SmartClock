@@ -30,6 +30,24 @@ static gboolean HandleGarageTemp(gpointer userdata)
     return G_SOURCE_REMOVE;
 }
 
+static void hide_cursor(GtkWidget *widget) {
+    GdkWindow *gdk_window = gtk_widget_get_window(widget);
+
+    if (gdk_window) {
+        GdkDisplay *display = gdk_window_get_display(gdk_window);
+        GdkCursor *invisible_cursor;
+
+        // Create a blank (invisible) cursor
+        cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_A8, 1, 1);
+        invisible_cursor = gdk_cursor_new_from_surface(display, surface, NULL, NULL);
+        cairo_surface_destroy(surface);
+
+        // Apply the invisible cursor
+        gdk_window_set_cursor(gdk_window, invisible_cursor);
+        g_object_unref(invisible_cursor);
+    }
+}
+
 int main(int argc, char* argv[]) {
     gtk_init(&argc, &argv);
 
@@ -79,14 +97,6 @@ int main(int argc, char* argv[]) {
         saveForecasts = (arg1.find("--saveForecasts") != std::string::npos);
     }
 
-    // GtkCssProvider *provider = gtk_css_provider_new ();
-    // gtk_css_provider_load_from_path (provider, "gtk-widgets.css", NULL);
-
-    // GtkStyleContext *context = gtk_widget_get_style_context(timeLabel);
-    // gtk_style_context_add_provider (context,
-    // 								  GTK_STYLE_PROVIDER(provider),
-    // 								  GTK_STYLE_PROVIDER_PRIORITY_USER);
-
     topRow = new TopRow();
     bottomRow = new BottomRow();
 
@@ -98,13 +108,11 @@ int main(int argc, char* argv[]) {
   	gtk_window_set_title(GTK_WINDOW(window), "SmartClock");
   	gtk_window_set_default_size(GTK_WINDOW(window), 1024, 768);
   	g_signal_connect (window, "destroy", G_CALLBACK(gtk_main_quit), nullptr);
+    g_signal_connect(window, "realize", G_CALLBACK(hide_cursor), NULL);
     gtk_container_add ( GTK_CONTAINER ( window ), screen );
   	GdkRGBA black_color {.0, .0, .0, 1.0};
   	gtk_widget_override_background_color(window, GtkStateFlags::GTK_STATE_FLAG_NORMAL, &black_color);
     gtk_widget_show_all(window);
-    // gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
-    // gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-    // gtk_window_fullscreen(GTK_WINDOW(window));
 
    
 	bottomRow->Update(days);
