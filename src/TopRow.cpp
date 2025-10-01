@@ -61,22 +61,26 @@ void TopRow::Update()
     time_t now;
     time(&now);
     struct tm *tm = localtime(&now);
+    bool am = true;
     if (tm->tm_hour > 12)
+    {
         tm->tm_hour -= 12;
+        am = false;
+    }
     if (tm->tm_hour == 0)
         tm->tm_hour = 12;
-    sprintf (time_buffer, "%2d:%02d", tm->tm_hour, tm->tm_min);//, tm->tm_sec);
+    sprintf (time_buffer, "%2d:%02d", tm->tm_hour, tm->tm_min);
     if (current_time != time_buffer)
     {
         current_time = time_buffer;
         /* --- Change the label to show new time --- */
-        if (tm->tm_hour >= 12)
+        if (am)
         {
-            strcpy(ampm_buffer, "PM");
+            strcpy(ampm_buffer, "AM");
         }
         else
         {
-            strcpy(ampm_buffer, "AM");
+            strcpy(ampm_buffer, "PM");
         }
 
         timeLabel->SetText(time_buffer);
